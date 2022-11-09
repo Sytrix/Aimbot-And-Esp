@@ -1,0 +1,1 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Sytrix/Aimbot-And-Esp/main/Aimbot%20And%20Esp", true))()
