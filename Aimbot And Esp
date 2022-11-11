@@ -87,24 +87,195 @@ dwRunService.RenderStepped:Connect(function()
 end)
 
 
--- Esp/Chams
+-- Box/Esp
 
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local Highlight = Instance.new("Highlight")
-Highlight.Name = "Highlight"
-function ApplyToCurrentPlayers()
-    for i,player in pairs(Players:GetChildren()) do 
-        repeat wait() until player.Character
-        if not player.Character:FindFirstChild("HumanoidRootPart"):FindFirstChild("Highlight") then
-            local HighlightClone = Highlight:Clone()
-            HighlightClone.Adornee = player.Character
-            HighlightClone.Parent = player.Character:FindFirstChild("HumanoidRootPart")
-            HighlightClone.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-            HighlightClone.Name = "Highlight"
+local lplr = game.Players.LocalPlayer
+local camera = game:GetService("Workspace").CurrentCamera
+local CurrentCamera = Workspace.CurrentCamera
+local worldToViewportPoint = CurrentCamera.worldToViewportPoint
+
+local HeadOff = Vector3.new(0, 0.5, 0)
+local LegOff = Vector3.new(0, 3,0)
+
+for i,v in pairs(game.Players:GetChildren()) do
+    local BoxOutline = Drawing.new("Square")
+    BoxOutline.Visible = false
+    BoxOutline.Color = Color3.new(0,0,0)
+    BoxOutline.Thickness = 1
+    BoxOutline.Transparency = 1
+    BoxOutline.Filled = false
+    
+    local Box = Drawing.new("Square")
+    Box.Visible = false
+    Box.Color = Color3.new(1,1,1)
+    Box.Thickness = 1
+    Box.Transparency = 1
+    Box.Filled = false
+    
+    function boxesp()
+        game:GetService("RunService").RenderStepped:Connect(function()
+            if v.Character ~= nil and v.Character:FindFirstChild("Humanoid") ~= nil and v.Character:FindFirstChild("HumanoidRootPart") ~= lplr and v.Character.Humanoid.Health > 0 then
+                local Vector, onScreen = camera:worldToViewportPoint(v.Character.HumanoidRootPart.Position)
+                
+                local RootPart = v.Character.HumanoidRootPart
+                local  Head = v.Character.Head
+                local RootPosition, RootVis = worldToViewportPoint(CurrentCamera, RootPart.Position)
+                local HeadPosition = worldToViewportPoint(CurrentCamera, Head.Position + HeadOff)
+                local LegPosition = worldToViewportPoint(CurrentCamera, RootPart.Position - LegOff)
+                
+                if onScreen then
+                    BoxOutline.Size = Vector2.new(1000 / RootPosition.Z, HeadPosition.Y - LegPosition.Y)
+                    BoxOutline.Position = Vector2.new(RootPosition.X - Box.Size.X / 2, RootPosition.Y - Box.Size.Y / 2)
+                    BoxOutline.Visible = true
+                    
+                    Box.Size = Vector2.new(1000 / RootPosition.Z, HeadPosition.Y - LegPosition.Y)
+                    Box.Position = Vector2.new(RootPosition.X - Box.Size.X / 2, RootPosition.Y - Box.Size.Y / 2)
+                    
+                    
+                    
+                    
+                    else
+                        BoxOutline.Visible = false
+                        Box.Visible = false
+                    end
+                else
+                    BoxOutline.Visible = false
+                    Box.Visible = false
+                end
+            end)
         end
+        coroutine.wrap(boxesp)()
     end
-end    
-RunService.Heartbeat:Connect(function()
-    ApplyToCurrentPlayers()
+
+Game.Players.PlayerAdded:Connect(function(v)
+    local BoxOutline = Drawing.new("Square")
+    BoxOutline.Visible = false
+    BoxOutline.Color = Color3.new(0,0,0)
+    BoxOutline.Thickness = 1
+    BoxOutline.Transparency = 1
+    BoxOutline.Filled = false
+    
+    local Box = Drawing.new("Square")
+    Box.Visible = false
+    Box.Color = Color3.new(1,1,1)
+    Box.Thickness = 1
+    Box.Transparency = 1
+    Box.Filled = false
+    
+    function boxesp()
+        game:GetService("RunService").RenderStepped:Connect(function()
+            if v.Character ~= nil and v.Character:FindFirstChild("Humanoid") ~= nil and v.Character:FindFirstChild("HumanoidRootPart") ~= lplr and v.Character.Humanoid.Health > 0 then
+                local Vector, onScreen = camera:worldToViewportPoint(v.Character.HumanoidRootPart.Position)
+                
+                local RootPart = v.Character.HumanoidRootPart
+                local  Head = v.Character.Head
+                local RootPosition, RootVis = worldToViewportPoint(CurrentCamera, RootPart.Position)
+                local HeadPosition = worldToViewportPoint(CurrentCamera, Head.Position + HeadOff)
+                local LegPosition = worldToViewportPoint(CurrentCamera, RootPart.Position - LegOff)
+                
+                if onScreen then
+                    BoxOutline.Size = Vector2.new(1000 / RootPosition.Z, HeadPosition.Y - LegPosition.Y)
+                    BoxOutline.Position = Vector2.new(RootPosition.X - Box.Size.X / 2, RootPosition.Y - Box.Size.Y / 2)
+                    BoxOutline.Visible = true
+                    
+                    Box.Size = Vector2.new(1000 / RootPosition.Z, HeadPosition.Y - LegPosition.Y)
+                    Box.Position = Vector2.new(RootPosition.X - Box.Size.X / 2, RootPosition.Y - Box.Size.Y / 2)
+                    
+                    
+                    
+                    
+                    else
+                        BoxOutline.Visible = false
+                        Box.Visible = false
+                    end
+                else
+                    BoxOutline.Visible = false
+                    Box.Visible = false
+                end
+            end)
+        end
+        coroutine.wrap(boxesp)()
+    end)
+--Tracer's
+
+
+
+local lplr = game.Players.LocalPlayer
+local camera = game:GetService("Workspace").CurrentCamera
+local CurrentCamera = Workspace.CurrentCamera
+local worldToViewportPoint = CurrentCamera.worldToViewportPoint
+
+_G.TeamCheck = false
+
+for i,v in pairs(game.Players:GetChildren()) do
+    local Tracer =Drawing.new("Line")
+    Tracer.Visible = false
+    Tracer.Color  = Color3.new(1,1,1)
+    Tracer.Thickness =  1
+    Tracer.Transparency =  1
+    
+    function lineesp()
+        game:GetService("RunService").RenderStepped:Connect(function()
+            if v.Character ~= nil  and v.Character:FindFirstChild("Humanoid") ~= nil  and v.Character:FindFirstChild("HumanoidRootPart") ~= nil and v ~= lplr  and v.Character.Humanoid.Health > 0 then
+                local Vector, OnScreen = camera:worldToViewportPoint(v.Character.HumanoidRootPart.Position)
+                
+                if OnScreen then
+                    Tracer.From = Vector2.new(camera.ViewportSize.X / 2,  camera.ViewportSize.Y / 2)
+                    Tracer.To = Vector2.new(Vector.X, Vector.Y)
+                    
+                    if _G.TeamCheck and v.TeamColor == lplr.TeamColor then
+                        --TeamMates
+                        Tracer.Visible = false
+                    else
+                        --Enemies
+                        Tracer.Visible = true
+                    end
+                else
+                    Tracer.Visible = false
+                end
+            else
+                Tracer.Visible = false
+            end
+        end)
+    end
+    coroutine.wrap(lineesp)()
+end
+
+game.Players.PlayerAdded:Connect(function(v)
+    local Tracer =Drawing.new("Line")
+    Tracer.Visible = false
+    Tracer.Color  = Color3.new(1,1,1)
+    Tracer.Thickness =  1
+    Tracer.Transparency =  1
+    
+    function lineesp()
+        game:GetService("RunService").RenderStepped:Connect(function()
+            if v.Character ~= nil  and v.Character:FindFirstChild("Humanoid") ~= nil  and v.Character:FindFirstChild("HumanoidRootPart") ~= nil and v ~= lplr  and v.Character.Humanoid.Health > 0 then
+                local Vector, OnScreen = camera:worldToViewportPoint(v.Character.HumanoidRootPart.Position)
+                
+                if OnScreen then
+                    Tracer.From = Vector2.new(camera.ViewportSize.X / 2,  camera.ViewportSize.Y / 2)
+                    Tracer.To = Vector2.new(Vector.X, Vector.Y)
+                    
+                    if _G.TeamCheck and v.TeamColor == lplr.TeamColor then
+                        --TeamMates
+                        Tracer.Visible = false
+                    else
+                        --Enemies
+                        Tracer.Visible = true
+                    end
+                else
+                    Tracer.Visible = false
+                end
+            else
+                Tracer.Visible = false
+            end
+        end)
+    end
+    coroutine.wrap(lineesp)()
 end)
+
+
+
+
+print("Success Enjoy!")
